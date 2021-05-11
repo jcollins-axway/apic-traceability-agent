@@ -1,0 +1,68 @@
+apic_traceability_agent:
+  central:
+    organizationID: "<AMPLIFY_ORG_ID>"
+    environment: <AMPLIFY_CENTRAL_ENVIRONMENT_NAME>
+    platformEnvironmentId: "<AMPLIFY_PLATFORM_ENV_ID>"
+    auth:
+      clientID: <AMPLIFY_CENTRAL_DOSA_CLIENT_ID>
+      privateKey: <AMPLIFY_CENTRAL_DOSA_PRIVATE_KEY_PATH>
+      publicKey: <AMPLIFY_CENTRAL_DOSA_PUBLIC_KEY_PATH>
+
+    gateway-section:
+      logFile: ./logs/traffic.log
+      processOnInput: false
+      config_key_1: "value-1"
+      config_key_3: "value-2"
+      config_key_2: "value-3"
+    log:
+      level: ${LOG_LEVEL:info}
+      format: ${LOG_FORMAT:json}
+      output: ${LOG_OUTPUT:stdout}
+
+# Condor Ingestion service
+output.traceability:
+  enabled: true
+  hosts:
+    - ${TRACEABILITY_HOST:"ingestion-lumberjack.datasearch.axway.com:453"}
+  protocol: ${TRACEABILITY_PROTOCOL:"tcp"}
+  compression_level: ${TRACEABILITY_COMPRESSIONLEVEL:3}
+  bulk_max_size: ${TRACEABILITY_BULKMAXSIZE:100}
+  timeout: ${TRACEABILITY_TIMEOUT:300s}
+  pipelining: ${TRACEABILITY_PIPELINING:0}
+  worker: ${TRACEABILITY_WORKER:2}
+  loadbalance: ${TRACEABILITY_LOADBALANCE:true}
+  slow_start: ${TRACEABILITY_SLOWSTART:true}
+  ssl:
+    enabled: true
+    verification_mode: none
+    cipher_suites:
+      - "ECDHE-ECDSA-AES-128-GCM-SHA256"
+      - "ECDHE-ECDSA-AES-256-GCM-SHA384"
+      - "ECDHE-ECDSA-CHACHA20-POLY1305"
+      - "ECDHE-RSA-AES-128-CBC-SHA256"
+      - "ECDHE-RSA-AES-128-GCM-SHA256"
+      - "ECDHE-RSA-AES-256-GCM-SHA384"
+      - "ECDHE-RSA-CHACHA20-POLY1205"
+  proxy_url: ${TRACEABILITY_PROXYURL:""}
+  redaction:
+    path:
+      show: ${TRACEABILITY_REDACTION_PATH_SHOW:[]}
+    queryArgument:
+      show: ${TRACEABILITY_REDACTION_QUERYARGUMENT_SHOW:[]}
+      sanitize: ${TRACEABILITY_REDACTION_QUERYARGUMENT_SANITIZE:[]}
+    requestHeader:
+      show: ${TRACEABILITY_REDACTION_REQUESTHEADER_SHOW:[]}
+      sanitize: ${TRACEABILITY_REDACTION_REQUESTHEADER_SANITIZE:[]}
+    responseHeader:
+      show: ${TRACEABILITY_REDACTION_RESPONSEHEADER_SHOW:[]}
+      sanitize: ${TRACEABILITY_REDACTION_RESPONSEHEADER_SANITIZE:[]}
+
+logging:
+  metrics:
+    enabled: false
+  files:
+    permissions: 0600
+    name: ${LOG_FILE_NAME:traceability_agent.log}
+    dir: ${LOG_FILE_PATH:logs}
+    keepfiles: ${LOG_FILE_KEEPFILES:7}
+    rotateeverybytes: ${LOG_FILE_ROTATEEVERYBYTES:10485760}
