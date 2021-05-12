@@ -7,7 +7,6 @@ import (
 	// Required Import to setup factory for traceability transport
 	_ "github.com/Axway/agent-sdk/pkg/traceability"
 
-	// CHANGE_HERE - Change the import path(s) below to reference packages correctly
 	"github.com/jcollins-axway/apic-traceability-agent/pkg/cmd"
 )
 

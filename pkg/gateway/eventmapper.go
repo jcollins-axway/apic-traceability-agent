@@ -15,7 +15,7 @@ import (
 type EventMapper struct {
 }
 
-func (m *EventMapper) processMapping(gatewayTrafficLogEntry GwTrafficLogEntry) ([]*transaction.LogEvent, error) {
+func (m *EventMapper) processMapping(gatewayTrafficLogEntry GwTrafficLogEntry) (*transaction.LogEvent, *[]transaction.LogEvent, error) {
 	centralCfg := agent.GetCentralConfig()
 
 	eventTime := time.Now().Unix()
@@ -24,7 +24,7 @@ func (m *EventMapper) processMapping(gatewayTrafficLogEntry GwTrafficLogEntry) (
 	txDetails := gatewayTrafficLogEntry.InboundTransaction
 	transInboundLogEventLeg, err := m.createTransactionEvent(eventTime, txID, txDetails, txEventID, "", "Inbound")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	txEventID = gatewayTrafficLogEntry.OutboundTransaction.ID
@@ -32,18 +32,17 @@ func (m *EventMapper) processMapping(gatewayTrafficLogEntry GwTrafficLogEntry) (
 	txDetails = gatewayTrafficLogEntry.OutboundTransaction
 	transOutboundLogEventLeg, err := m.createTransactionEvent(eventTime, txID, txDetails, txEventID, txParentEventID, "Outbound")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	transSummaryLogEvent, err := m.createSummaryEvent(eventTime, txID, gatewayTrafficLogEntry, centralCfg.GetTeamID())
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return []*transaction.LogEvent{
-		transSummaryLogEvent,
-		transInboundLogEventLeg,
-		transOutboundLogEventLeg,
+	return transSummaryLogEvent, &[]transaction.LogEvent{
+		*transInboundLogEventLeg,
+		*transOutboundLogEventLeg,
 	}, nil
 }
 

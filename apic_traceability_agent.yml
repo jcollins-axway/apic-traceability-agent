@@ -1,23 +1,48 @@
 apic_traceability_agent:
   central:
-    organizationID: "<AMPLIFY_ORG_ID>"
-    environment: <AMPLIFY_CENTRAL_ENVIRONMENT_NAME>
-    platformEnvironmentId: "<AMPLIFY_PLATFORM_ENV_ID>"
+    url: "${CENTRAL_URL:https://apicentral.axway.com}"
+    organizationID: "${CENTRAL_ORGANIZATIONID}"
+    team: ${CENTRAL_TEAM:""}
+    deployment: "${CENTRAL_DEPLOYMENT:prod}"
+    environment: "${CENTRAL_ENVIRONMENT}"
+    agentName: ${CENTRAL_AGENTNAME:""}
+    platformURL: "${CENTRAL_PLATFORMURL:https://platform.axway.com}"
+    platformEnvironmentId: ${CENTRAL_PLATFORMENVIRONMENTID:""}
+    lighthouseURL: ${CENTRAL_LIGHTHOUSEURL:"https://lighthouse.admin.axway.com"}
+    publishUsage: ${CENTRAL_PUBLISHUSAGE:true}
+    publishTraffic: ${CENTRAL_PUBLISHTRAFFIC:true}
+    eventAggregationInterval: ${CENTRAL_EVENTAGGREGATIONINTERVAL:5m}
+    reportActivityFrequency: ${CENTRAL_REPORTACTIVITYFREQUENCY:5m}
     auth:
-      clientID: <AMPLIFY_CENTRAL_DOSA_CLIENT_ID>
-      privateKey: <AMPLIFY_CENTRAL_DOSA_PRIVATE_KEY_PATH>
-      publicKey: <AMPLIFY_CENTRAL_DOSA_PUBLIC_KEY_PATH>
+      url: "${CENTRAL_AUTH_URL:https://login.axway.com/auth}"
+      realm: "${CENTRAL_AUTH_REALM:Broker}"
+      clientId: "${CENTRAL_AUTH_CLIENTID}"
+      privateKey: "${CENTRAL_AUTH_PRIVATEKEY:/keys/private_key.pem}"
+      publicKey: "${CENTRAL_AUTH_PUBLICKEY:/keys/public_key.pem}"
+      keyPassword: ${CENTRAL_AUTH_KEYPASSWORD:""}
+    ssl:
+      minVersion: ${CENTRAL_SSL_MINVERSION:"TLS1.2"}
+      maxVersion: ${CENTRAL_SSL_MAXVERSION:"TLS1.3"}
+      nextProtos: ${CENTRAL_SSL_NEXTPROTOS:[]}
+      cipherSuites: ${CENTRAL_SSL_CIPHERSUITES:["ECDHE-ECDSA-AES-256-GCM-SHA384", "ECDHE-RSA-AES-256-GCM-SHA384", "ECDHE-ECDSA-CHACHA20-POLY1305", "ECDHE-RSA-CHACHA20-POLY1305", "ECDHE-ECDSA-AES-128-GCM-SHA256", "ECDHE-RSA-AES-128-GCM-SHA256", "ECDHE-ECDSA-AES-128-CBC-SHA256", "ECDHE-RSA-AES-128-CBC-SHA256"]}
+      insecureSkipVerify: ${CENTRAL_SSL_INSECURESKIPVERIFY:false}
+  apic:
+    logFile: ./logs/traffic.log
+    processOnInput: ${APIC_PROCESSONINPUT:false}
+    config_key_1: "value-1"
+    config_key_3: "value-2"
+    config_key_2: "value-3"
+  log:
+    level: ${LOG_LEVEL:info}
+    format: ${LOG_FORMAT:json}
+    output: ${LOG_OUTPUT:stdout}
 
-    gateway-section:
-      logFile: ./logs/traffic.log
-      processOnInput: false
-      config_key_1: "value-1"
-      config_key_3: "value-2"
-      config_key_2: "value-3"
-    log:
-      level: ${LOG_LEVEL:info}
-      format: ${LOG_FORMAT:json}
-      output: ${LOG_OUTPUT:stdout}
+queue:
+  mem:
+    events: ${QUEUE_MEM_EVENTS:2048}
+    flush:
+      min_events: ${QUEUE_MEM_FLUSH_MINEVENTS:100}
+      timeout: ${QUEUE_MEM_FLUSH_TIMEOUT:1s}
 
 # Condor Ingestion service
 output.traceability:
@@ -33,7 +58,7 @@ output.traceability:
   loadbalance: ${TRACEABILITY_LOADBALANCE:true}
   slow_start: ${TRACEABILITY_SLOWSTART:true}
   ssl:
-    enabled: true
+    enabled: ${TRACEABILITY_ENABLE_SSL:true}
     verification_mode: none
     cipher_suites:
       - "ECDHE-ECDSA-AES-128-GCM-SHA256"
@@ -56,6 +81,8 @@ output.traceability:
     responseHeader:
       show: ${TRACEABILITY_REDACTION_RESPONSEHEADER_SHOW:[]}
       sanitize: ${TRACEABILITY_REDACTION_RESPONSEHEADER_SANITIZE:[]}
+  sampling:
+    percentage: ${TRACEABILITY_SAMPLING_PERCENTAGE:1}
 
 logging:
   metrics:

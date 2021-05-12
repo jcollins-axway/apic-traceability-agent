@@ -75,20 +75,16 @@ func (p *EventProcessor) ProcessRaw(rawEventData []byte) []beat.Event {
 		return nil
 	}
 	// Map the log entry to log event structure expected by AMPLIFY Central Observer
-	logEvents, err := p.eventMapper.processMapping(gatewayTrafficLogEntry)
+	summaryEvent, detailEvents, err := p.eventMapper.processMapping(gatewayTrafficLogEntry)
 	if err != nil {
 		log.Error(err.Error())
 		return nil
 	}
-	events := make([]beat.Event, 0)
-	for _, logEvent := range logEvents {
-		// Generates the beat.Event with attributes by AMPLIFY ingestion service
-		event, err := p.eventGenerator.CreateEvent(*logEvent, time.Now(), nil, nil, nil)
-		if err != nil {
-			log.Error(err.Error())
-		} else {
-			events = append(events, event)
-		}
+
+	// Generates the beat.Event with attributes by AMPLIFY ingestion service
+	events, err := p.eventGenerator.CreateTransactionEvents(*summaryEvent, *detailEvents, time.Now(), nil, nil, nil)
+	if err != nil {
+		log.Error(err.Error())
 	}
 	return events
 }

@@ -9,7 +9,7 @@ import (
 // AgentConfig - represents the config for agent
 type AgentConfig struct {
 	CentralCfg corecfg.CentralConfig `config:"central"`
-	GatewayCfg *GatewayConfig        `config:"gateway-section"`
+	GatewayCfg *GatewayConfig        `config:"apic"`
 }
 
 // GatewayConfig - represents the config for gateway
@@ -25,7 +25,7 @@ type GatewayConfig struct {
 // ValidateCfg - Validates the gateway config
 func (c *GatewayConfig) ValidateCfg() (err error) {
 	if c.LogFile == "" {
-		return errors.New("Invalid gateway configuration: logFile is not configured")
+		return errors.New("Invalid apic configuration: logFile is not configured")
 	}
 
 	return

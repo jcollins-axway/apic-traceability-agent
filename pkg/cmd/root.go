@@ -19,8 +19,9 @@ var beatCmd *libcmd.BeatsRootCmd
 func init() {
 	name := "apic_traceability_agent"
 	settings := instance.Settings{
-		Name:          name,
-		HasDashboards: true,
+		Name:            name,
+		HasDashboards:   true,
+		ConfigOverrides: corecfg.LogConfigOverrides(),
 	}
 
 	// Initialize the beat command
@@ -39,11 +40,11 @@ func init() {
 
 	// Get the root command properties and bind the config property in YAML definition
 	rootProps := RootCmd.GetProperties()
-	rootProps.AddStringProperty("gateway-section.logFile", "./logs/traffic.log", "Sample log file with traffic event from gateway")
-	rootProps.AddBoolProperty("gateway-section.processOnInput", true, "Flag to process received event on input or by output before publishing the event by transport")
-	rootProps.AddStringProperty("gateway-section.config_key_1", "", "Sample Config Key 1")
-	rootProps.AddStringProperty("gateway-section.config_key_2", "", "Sample Config Key 1")
-	rootProps.AddStringProperty("gateway-section.config_key_3", "", "Sample Config Key 3")
+	rootProps.AddStringProperty("apic.logFile", "./logs/traffic.log", "Sample log file with traffic event from gateway")
+	rootProps.AddBoolProperty("apic.processOnInput", true, "Flag to process received event on input or by output before publishing the event by transport")
+	rootProps.AddStringProperty("apic.config_key_1", "", "Sample Config Key 1")
+	rootProps.AddStringProperty("apic.config_key_2", "", "Sample Config Key 1")
+	rootProps.AddStringProperty("apic.config_key_3", "", "Sample Config Key 3")
 
 }
 
@@ -58,11 +59,11 @@ func initConfig(centralConfig corecfg.CentralConfig) (interface{}, error) {
 	rootProps := RootCmd.GetProperties()
 	// Parse the config from bound properties and setup gateway config
 	gatewayConfig := &config.GatewayConfig{
-		LogFile:        rootProps.StringPropertyValue("gateway-section.logFile"),
-		ProcessOnInput: rootProps.BoolPropertyValue("gateway-section.processOnInput"),
-		ConfigKey1:     rootProps.StringPropertyValue("gateway-section.config_key_1"),
-		ConfigKey2:     rootProps.StringPropertyValue("gateway-section.config_key_2"),
-		ConfigKey3:     rootProps.StringPropertyValue("gateway-section.config_key_3"),
+		LogFile:        rootProps.StringPropertyValue("apic.logFile"),
+		ProcessOnInput: rootProps.BoolPropertyValue("apic.processOnInput"),
+		ConfigKey1:     rootProps.StringPropertyValue("apic.config_key_1"),
+		ConfigKey2:     rootProps.StringPropertyValue("apic.config_key_2"),
+		ConfigKey3:     rootProps.StringPropertyValue("apic.config_key_3"),
 	}
 
 	agentConfig := &config.AgentConfig{
