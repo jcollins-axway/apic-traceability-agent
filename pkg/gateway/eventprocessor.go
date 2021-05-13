@@ -82,7 +82,7 @@ func (p *EventProcessor) ProcessRaw(rawEventData []byte) []beat.Event {
 	}
 
 	// Generates the beat.Event with attributes by AMPLIFY ingestion service
-	events, err := p.eventGenerator.CreateTransactionEvents(*summaryEvent, *detailEvents, time.Now(), nil, nil, nil)
+	events, err := p.eventGenerator.CreateEvents(*summaryEvent, *detailEvents, time.Now(), nil, nil, nil)
 	if err != nil {
 		log.Error(err.Error())
 	}
