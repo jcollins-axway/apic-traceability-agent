@@ -18,7 +18,7 @@ type EventMapper struct {
 func (m *EventMapper) processMapping(gatewayTrafficLogEntry GwTrafficLogEntry) (*transaction.LogEvent, *[]transaction.LogEvent, error) {
 	centralCfg := agent.GetCentralConfig()
 
-	eventTime := time.Now().Unix()
+	eventTime := time.Now().UnixNano() / int64(time.Millisecond)
 	txID := gatewayTrafficLogEntry.TraceID
 	txEventID := gatewayTrafficLogEntry.InboundTransaction.ID
 	txDetails := gatewayTrafficLogEntry.InboundTransaction
